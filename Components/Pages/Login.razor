@@ -1,0 +1,55 @@
+﻿@page "/login"
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+
+<PageTitle>Login</PageTitle>
+
+<h1>Login</h1>
+
+@if (showErrorMessage)
+{
+    <p style="color: red;">Invalid login attempt. Please try again.</p>
+}
+
+<form method="post">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" @bind="username" required />
+
+    <br />
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" @bind="password" required />
+
+    <br />
+
+    <button class="btn btn-primary" @onclick="LoginF">Login</button>
+</form>
+
+@code {
+    private string username;
+    private string password;
+    private bool showErrorMessage = false;
+
+    private void LoginF()
+    {
+        // Implement your logic for validating the login credentials
+        // For demonstration purposes, this example always returns true
+        if (IsValidLogin(username, password))
+        {
+            // Redirect to the counter page on successful login
+            NavigationManager.NavigateTo("/counter");
+        }
+        else
+        {
+            // Show an error message if login fails
+            showErrorMessage = true;
+        }
+    }
+
+    private bool IsValidLogin(string username, string password)
+    {
+        // Implement your logic for validating the login credentials
+        // For demonstration purposes, this example always returns true
+        return true;
+    }
+}

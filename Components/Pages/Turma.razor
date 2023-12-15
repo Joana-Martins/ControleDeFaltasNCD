@@ -1,0 +1,141 @@
+﻿@page "/turma"
+@rendermode InteractiveServer
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Turmas</PageTitle>
+
+<script>
+    window.showModal = function (modalId) {
+        var modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.display = 'block';
+        }
+    };
+
+    window.hideModal = function (modalId) {
+        var modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    };
+</script>
+
+
+<h1>Turmas</h1>
+
+<div>
+    <button class="btn" @onclick="ToggleRegistrationForm">Toggle Registration Form</button>
+    <button class="btn" @onclick="ToggleDeletionForm">Toggle Deletion Form</button>
+</div>
+
+@if (showRegistrationForm)
+{
+    <h2>Register User</h2>
+    <form @onsubmit="RegisterUser">
+        <label for="userName">Name:</label>
+        <input type="text" id="userName" @bind="newUserName" required />
+
+        <br />
+
+        <label for="userEmail">Email:</label>
+        <input type="email" id="userEmail" @bind="newUserEmail" required />
+
+        <br />
+
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+}
+
+
+@if (showDeletionForm)
+{
+    <h2>Delete User</h2>
+    <form>
+        <label for="userId">User ID:</label>
+        <input type="text" id="userId" @bind="userIdToDelete" required />
+
+        <br />
+
+        <button type="button" class="btn btn-danger" @onclick="ShowConfirmationModal">Delete</button>
+
+        @if (showConfirmationModal)
+        {
+            <div class="modal" id="confirmationModal">
+                <div class="modal-content">
+                    <p>Are you sure you want to delete this user?</p>
+                    <button class="btn btn-danger" @onclick="DeleteUser">Yes, Delete</button>
+                    <button class="btn" @onclick="HideConfirmationModal">Cancel</button>
+                </div>
+            </div>
+        }
+    </form>
+}
+
+@code {
+    private bool showRegistrationForm = false;
+    private bool showDeletionForm = false;
+    private string newUserName = "";
+    private string newUserEmail = "";
+    private string userIdToDelete = "";
+
+    private bool showConfirmationModal = false;
+
+    private void ToggleRegistrationForm()
+    {
+        showRegistrationForm = !showRegistrationForm;
+
+        // Hide the deletion form when toggling the registration form
+        if (showRegistrationForm)
+        {
+            showDeletionForm = false;
+        }
+    }
+
+    private void ToggleDeletionForm()
+    {
+        showDeletionForm = !showDeletionForm;
+
+        // Hide the registration form when toggling the deletion form
+        if (showDeletionForm)
+        {
+            showRegistrationForm = false;
+        }
+    }
+
+    private async Task ShowConfirmationModal()
+    {
+        await JSRuntime.InvokeVoidAsync("showModal", "confirmationModal");
+        //await JSRuntime.InvokeVoidAsync("alert", "Isso é um alerta em Blazor!");
+        showConfirmationModal = true;
+    }
+
+    private async Task HideConfirmationModal()
+    {
+        await JSRuntime.InvokeVoidAsync("hideModal", "confirmationModal");
+        showConfirmationModal = false;
+    }
+
+    private void DeleteUser()
+    {
+        // Implement your logic to delete a user based on the provided ID
+        // For demonstration purposes, this example just prints the ID
+        Console.WriteLine($"Deleted User with ID: {userIdToDelete}");
+
+        // Clear the form and hide it
+        userIdToDelete = "";
+        showDeletionForm = false;
+        showConfirmationModal = false;
+    }
+
+    private void RegisterUser()
+    {
+        // Implement your logic to register a new user
+        // For demonstration purposes, this example just prints the details
+        Console.WriteLine($"Registered User: Name - {newUserName}, Email - {newUserEmail}");
+
+        // Clear the form and hide it
+        newUserName = "";
+        newUserEmail = "";
+        showRegistrationForm = false;
+    }
+}

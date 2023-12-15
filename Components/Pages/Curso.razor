@@ -1,0 +1,46 @@
+﻿@page "/curso"
+
+<PageTitle>Curso Management</PageTitle>
+
+<h1>Curso Management</h1>
+
+@code {
+    private bool showRegistrationForm = false;
+    private bool showDeletionForm = false;
+    private string newCursoName = "";
+    private string cursoIdToDelete = "";
+    private string maxFormHeight = "0px"; // Initially, the form is collapsed
+
+    private void ToggleForm()
+    {
+        showRegistrationForm = !showRegistrationForm;
+        showDeletionForm = false;
+
+        // Adjust the maximum height as needed
+        maxFormHeight = showRegistrationForm ? "1000px" : "0px";
+    }
+
+    private void RegisterCurso()
+    {
+        // Implement your logic to register a new Curso
+        // For demonstration purposes, this example just prints the details
+        Console.WriteLine($"Registered Curso: Curso Name - {newCursoName}");
+
+        // Clear the form and hide it
+        newCursoName = "";
+        showRegistrationForm = false;
+        maxFormHeight = "0px"; // Collapse the form
+    }
+
+    private void DeleteCurso()
+    {
+        // Implement your logic to delete a Curso based on the provided ID
+        // For demonstration purposes, this example just prints the ID
+        Console.WriteLine($"Deleted Curso with ID: {cursoIdToDelete}");
+
+        // Clear the form and hide it
+        cursoIdToDelete = "";
+        showDeletionForm = false;
+        maxFormHeight = "0px"; // Collapse the form
+    }
+}

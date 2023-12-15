@@ -1,0 +1,96 @@
+﻿@page "/registro"
+@rendermode InteractiveServer
+
+<style>
+  
+    .custom-line{
+        background-color: #7B8B99 !important;
+        color: white;
+    }
+
+    .fonte{
+        font: Futura;
+    }
+</style>
+
+
+<PageTitle>Registrar</PageTitle>
+
+<h1 class="fonte">Registar Presenças</h1>
+
+<div>
+    <label for="filterDropdown">Filtrar por:</label>
+    <select id="filterDropdown" @bind="selectedFilter">
+        <option value="Name">Name</option>
+        <option value="Age">Age</option>
+        <!-- Add more options as needed -->
+    </select>
+
+    <input type="text" @bind="filterText" placeholder="Digite o filtro" />
+
+    <button class="btn" @onclick="ApplyFilter">Filtrar</button>
+</div>
+
+<table class="table">
+    <thead>
+        <tr class="custom-line">
+            <th>Name</th>
+            <th>Age</th>
+            <!-- Add more columns as needed -->
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in filteredItems)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Age</td>
+                <!-- Add more columns as needed -->
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<SortableItem> items;
+    private List<SortableItem> filteredItems;
+    private string selectedFilter = "Name"; // Default filtering field
+    private string filterText = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        // Initialize your list of items (replace this with your data source)
+        items = new List<SortableItem>
+        {
+            new SortableItem { Name = "John", Age = 25 },
+            new SortableItem { Name = "Alice", Age = 30 },
+            // Add more items as needed
+        };
+
+        // Set the initial filteredItems to the original items
+        filteredItems = new List<SortableItem>(items);
+    }
+
+    private void ApplyFilter()
+    {
+        // Filter the items based on the selected filter and filter text
+        filteredItems = items
+            .Where(item => GetPropertyValue(item, selectedFilter)
+                .ToString()
+                .Contains(filterText, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+    }
+
+    private object GetPropertyValue(SortableItem item, string propertyName)
+    {
+        // This method retrieves the value of a property dynamically
+        return typeof(SortableItem).GetProperty(propertyName)?.GetValue(item, null);
+    }
+
+    public class SortableItem
+    {
+        public string Name { get; set; }
+        public int Age { get; set; }
+        // Add more properties as needed
+    }
+}
